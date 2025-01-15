@@ -13,7 +13,7 @@
     double sideh  = 0.5*side;
     double rcoffs = rcoff*rcoff;
 
-#pragma omp parallel for shared(f, npart, side, sideh, rcoffs) reduction(+:epot) reduction(-:vir) \ chedule(dynamic)
+#pragma omp parallel for shared(f, npart, side, sideh, rcoffs) reduction(+:epot) reduction(-:vir) \ reduction(+f[0:npart*3]) schedule(dynamic)
       
     for (int i=0; i<npart*3; i+=3) {
       double xi  = x[i];
@@ -48,21 +48,21 @@
           fyi     += yy*r148;
           fzi     += zz*r148;
 
-          #pragma omp atomic
+          //#pragma omp atomic
           f[j]    -= xx*r148;
-          #pragma omp atomic
+          //#pragma omp atomic
           f[j+1]  -= yy*r148;
-          #pragma omp atomic
+          //#pragma omp atomic
           f[j+2]  -= zz*r148;
 
         }
       }
         
-          #pragma omp atomic
+          //#pragma omp atomic
           f[i]     += fxi;
-          #pragma omp atomic
+          //#pragma omp atomic
           f[i+1]   += fyi;
-          #pragma omp atomic
+          //#pragma omp atomic
           f[i+2]   += fzi;
 
     }
